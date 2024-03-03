@@ -41,6 +41,6 @@ def monthly_challenge_int(request, monthly):
 def monthly_challenge(request, monthly):
     try:
         challenge = monthly_challenges[monthly]
-        return HttpResponse(challenge)
+        return render(request,"challenges/challenge.html",{'text':challenge, 'month': monthly.capitalize()})
     except:
         return HttpResponseNotFound("No such month. Please try again")
