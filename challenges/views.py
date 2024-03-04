@@ -15,32 +15,30 @@ monthly_challenges = {
     "september":"sep",
     "october":"oct",
     "november":"nov",
-    "december":"dec",
+    "december":None,
 }
 
 # Create your views here.
 def index(request):
     list_item =""
     months = list(monthly_challenges.keys())
-    for month in months:
-        directed_path = reverse("monthly-challenge",args=[month])
-        list_item += f"<li><a href='{directed_path}'>{month.capitalize()}</a></li>"
-    response = f"<ul>{list_item}</ul>"
-    return HttpResponse(response)
+    return render(request,"challenges/index.html", {
+        "months": months
+    })
 
-def monthly_challenge_int(request, monthly):
+def monthly_challenge_int(request, month):
     months = list(monthly_challenges.keys())
-    if monthly > len(months):
+    if month > len(months):
         return HttpResponseNotFound("No such month")
     else:
-        selected_month = months[monthly-1] # Must minus 1 as list index starts from 0
+        selected_month = months[month-1] # Must minus 1 as list index starts from 0
         redirected_path = reverse("monthly-challenge",args=[selected_month])
         return HttpResponseRedirect(redirected_path)
 
 
-def monthly_challenge(request, monthly):
+def monthly_challenge(request, month):
     try:
-        challenge = monthly_challenges[monthly]
-        return render(request,"challenges/challenge.html",{'text':challenge, 'month': monthly.capitalize()})
+        challenge = monthly_challenges[month]
+        return render(request,"challenges/challenge.html",{'text':challenge, 'month_name': month})
     except:
         return HttpResponseNotFound("No such month. Please try again")
